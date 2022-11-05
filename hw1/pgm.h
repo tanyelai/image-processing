@@ -31,7 +31,6 @@ void pgm_free(PGM *pgm);
 PGM *sobel_filter(PGM *img, char *padding, char *choice);
 void create_gaussian_filter(int kernel_size, float kernel[kernel_size][kernel_size], float sigma);
 PGM *convolution(PGM *img, char *padding, int kernel_size, float kernel[][kernel_size]);
-PGM *minmax_scaler(PGM *img, int **filtered);
 
 
 #endif //PGM_H

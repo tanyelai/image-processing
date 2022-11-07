@@ -56,11 +56,13 @@ PGM *pgm_create(int width, int height, int max_val, char *type){
     return pgm;
 }
 
+
+
 /**
  * @brief Read a pgm image from a file and return a pointer to the image struct
  *        Check for PGM type is P2, reading mode is r and if PGM type is P5, reading mode is rb
  *        if PGM type is P2, data orientation is like this: data|whitespace|data|whitespace
- *          so fscanf reads data|whitespace and then data to fill the image struct
+ *        so fscanf reads data|whitespace and then data to fill the image struct
  *        if PGM type is P5, we can read the data with fread line by line 
  *        Single pixel data type is unsigned char (max value is 255)
  * 
@@ -93,7 +95,7 @@ PGM *pgm_read(char *filename){
     if (pgm->type[1] == '2'){
        for (i = 0; i < pgm->height; i++){
             for (j = 0; j < pgm->width; j++)
-                fscanf(ptr, "%hhu ", &pgm->matrix[i][j]);
+                fscanf(ptr, "%hhu", &pgm->matrix[i][j]);
         }
     }
     else if (pgm->type[1] == '5'){
@@ -247,11 +249,17 @@ PGM *sobel_filter(PGM *img, char *padding, char *choice){
 
     double **temp_x = (double **)malloc(sizeof(double *) * img->height - 2);
     double **temp_y = (double **)malloc(sizeof(double *) * img->height - 2);
+    double **temp_xy = (double **)malloc(sizeof(double *) * img->height - 2);
+    
 
-    for (i = 0; i < img->height - 1; i++){
+
+    for (i = 0; i < img->height; i++){
         temp_x[i] = (double *)malloc(sizeof(double) * img->width - 2);
         temp_y[i] = (double *)malloc(sizeof(double) * img->width - 2);
+        temp_xy[i] = (double *)malloc(sizeof(double) * img->width - 2);
+
     }
+
 
     if (strcmp(padding, "True") == 0){
         filtered = pgm_create(img->width, img->height, img->max_val, img->type);
@@ -265,6 +273,7 @@ PGM *sobel_filter(PGM *img, char *padding, char *choice){
         sobel_y = pgm_create(img->width - 2, img->height - 2, img->max_val, img->type);
         k = 0;
     }
+
 
     for (i = 0; i < img->height - 2; i++){
         for (j = 0; j < img->width - 2; j++){
@@ -291,19 +300,32 @@ PGM *sobel_filter(PGM *img, char *padding, char *choice){
         }
     }
 
-    /* Sobel x and y directions are calculated in the same loop */
-    for (i = 0; i < img->width - 2; i++){
-        for (j = 0; j < img->height - 2; j++){
+
+    /* Sobel XY */
+    for (i = 0; i < img->height - 2; i++)
+        for (j = 0; j < img->width - 2; j++)
+            temp_xy[i + k][j + k] = (int)(sqrt(pow(temp_x[i + k][j + k], 2) + pow(temp_y[i + k][j + k], 2)));
+    
+
+    int min = 100000, max = -100000;
+    for(i=0; i<img->height - 2; i++){
+		for(j=0; j<img->width - 2; j++){
+			if(temp_xy[i][j] < min)
+				min = temp_xy[i][j];
+			else if(temp_xy[i][j] > max)
+				max = temp_xy[i][j];
+		}
+	}
+
+      /* Sobel x and y directions are calculated in the same loop */
+    for (i = 0; i < img->height - 2; i++){
+        for (j = 0; j < img->width - 2; j++){
             sobel_x->matrix[i + k][j + k] = (unsigned char)(temp_x[i][j] - x_min) * 255 / (x_max - x_min);
             sobel_y->matrix[i + k][j + k] = (unsigned char)(temp_y[i][j] - y_min) * 255 / (y_max - y_min);
+            filtered->matrix[i + k][j + k] = (unsigned char)(temp_xy[i][j] - min) * 255 / (max - min);
         }
     }
 
-    /* Sobel XY */
-    for (i = 0; i < img->width - 2; i++){
-        for (j = 0; j < img->height - 2; j++)
-            filtered->matrix[i + k][j + k] = (unsigned char)(sqrt(pow(sobel_x->matrix[i + k][j + k], 2) + pow(sobel_y->matrix[i + k][j + k], 2)));
-    }
 
     for (i = 0; i < img->height - 1; i++){
         free(temp_x[i]);
@@ -314,12 +336,12 @@ PGM *sobel_filter(PGM *img, char *padding, char *choice){
     free(temp_y);
 
     /*return filtered image, determined by input at main function*/
-    if (strcmp(choice, "SOBEL_X") == 0){
+    if (strcmp(choice, "sobelx") == 0){
         pgm_free(sobel_y);
         pgm_free(filtered);
         return sobel_x;
     }
-    else if(strcmp(choice, "SOBEL_Y") == 0){
+    else if(strcmp(choice, "sobely") == 0){
         pgm_free(sobel_x);
         pgm_free(filtered);
         return sobel_y;
@@ -358,12 +380,20 @@ void create_gaussian_filter(int kernel_size, float kernel[kernel_size][kernel_si
 		}
 	}
 
-float normalization_factor = kernel[0][0];
+    float normalization_factor = kernel[0][0];
 
-	for(i=0; i<kernel_size; i++){
+	for(i=0; i<kernel_size; i++)
 		for(j=0; j<kernel_size; j++)
 			kernel[i][j] = round(kernel[i][j] / (normalization_factor));
+	
+
+    printf("\n\n-------------------\nGaussian Kernel:\n\n");
+	for(i=0; i<kernel_size; i++){
+		for(j=0; j<kernel_size; j++)
+			printf(" %.f ", kernel[i][j]);
+		printf("\n");
 	}
+    printf("\n");
 
 }
 
@@ -389,19 +419,19 @@ PGM *convolution(PGM *img, char *padding, int kernel_size, float kernel[][kernel
         k = size / 2;
     }
     else{
-        scaled_img = pgm_create(img->width - 2, img->height - 2, img->max_val, img->type);
+        scaled_img = pgm_create(img->width - kernel_size + 1, img->height - kernel_size + 1, img->max_val, img->type);
         k = 0;
     }
 
-    int **filtered = (int **)malloc(img->width * sizeof(int *));
-    for (i = 0; i < img->width; i++)
-        filtered[i] = (int *)malloc(img->height * sizeof(int));
+    int **filtered = (int **)malloc(img->height * sizeof(int *));
+    for (i = 0; i < img->height; i++)
+        filtered[i] = (int *)malloc(img->width * sizeof(int));
     
 
 
     // init filtered matrix
-    for (i = 0; i < img->width - kernel_size + 1; i++){
-        for (j = 0; j < img->height - kernel_size + 1; j++){
+    for (i = 0; i < img->height - kernel_size + 1; i++){
+        for (j = 0; j < img->width - kernel_size + 1; j++){
             sum = 0;
             for (ki = 0; ki < kernel_size; ki++){
                 for (kj = 0; kj < kernel_size; kj++){
@@ -416,10 +446,10 @@ PGM *convolution(PGM *img, char *padding, int kernel_size, float kernel[][kernel
     // int array is used to be able to hold 255+ values which are created by filter
     // then we scale the 255+ values to 0-255 and scaled_img will be holding new
     // scaled image.
-    int min = filtered[0][0], max = filtered[0][0];
+    int min = 1000000, max = -10000000;
     
-    for(i=0; i<img->width - kernel_size + 1; i++){
-		for(j=0; j<img->height - kernel_size + 1; j++){
+    for(i=0; i<img->height - kernel_size + 1; i++){
+		for(j=0; j<img->width - kernel_size + 1; j++){
 			if(filtered[i][j] < min)
 				min = filtered[i][j];
 			else if(filtered[i][j] > max)
@@ -428,17 +458,17 @@ PGM *convolution(PGM *img, char *padding, int kernel_size, float kernel[][kernel
 	}
 	printf("\nMIN: %d\nMAX: %d\n", min, max);
 	
-    int dif = max-min;
-	for(i=0; i < img->width; i++)
-		for(j=0; j < img->height; j++)
-			filtered[i][j] =  (int) (((float) (filtered[i][j] - min) / dif) * (255-min)) + min;
+    //int dif = max-min;
+	for(i=0; i < img->height; i++)
+		for(j=0; j < img->width; j++)
+			filtered[i][j] =  (int) (((float) (filtered[i][j] - min) / (max - min)) * 255);
+         
 
 
-    for(i = 0; i < img->width - kernel_size + 1; i++)
-		for(j = 0; j < img->height - kernel_size + 1; j++)
+    for(i = 0; i < img->height - kernel_size + 1; i++)
+		for(j = 0; j < img->width - kernel_size + 1; j++)
 			scaled_img->matrix[i][j] = (unsigned char) filtered[i][j];
 
 
     return scaled_img;
 }
-

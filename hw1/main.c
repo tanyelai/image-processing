@@ -15,8 +15,9 @@ int main(int argc, char *argv[]){
     }
 
     PGM *pgm = pgm_read(filename);
+    //pgm_show_matrix(pgm, pgm->width, pgm->height);
 
-    printf("\nPlease, enter the kernel type (gauss, laplacian, sobelx, sobely, sobelxy, sobel): ");
+    printf("\nPlease, enter the kernel type\n (gauss, laplacian, sobelx, sobely, sobelxy, sobel): ");
     scanf("%s", kernel_type);
 
 
@@ -25,7 +26,7 @@ int main(int argc, char *argv[]){
         scanf("%d %f", &kernel_size, &sigma);
         float kernel[kernel_size][kernel_size];
         create_gaussian_filter(kernel_size, kernel, sigma);
-        PGM *gaussed = convolution(pgm, "Yes", kernel_size, kernel);
+        PGM *gaussed = convolution(pgm, "False", kernel_size, kernel);
         pgm_write(gaussed, "test_gaussed.pgm");
         pgm_free(gaussed);
     }
@@ -42,11 +43,11 @@ int main(int argc, char *argv[]){
                                {-1, -1, -1}};
 
         if (choice == 1){
-            PGM *laplacianed = convolution(pgm, "Yes", 3, kernel_1);
+            PGM *laplacianed = convolution(pgm, "False", 3, kernel_1);
             pgm_write(laplacianed, "test_laplacianed_by_k1.pgm");
         }    
         else if (choice == 2){
-            PGM *laplacianed = convolution(pgm, "Yes", 3, kernel_2);
+            PGM *laplacianed = convolution(pgm, "False", 3, kernel_2);
             pgm_write(laplacianed, "test_laplacianed_by_k2.pgm");
         }
         else{
@@ -56,23 +57,23 @@ int main(int argc, char *argv[]){
     }
 
     else if(strcmp(kernel_type, "sobelx") == 0){
-        PGM *sobelx = sobel_filter(pgm, "True", "sobelx");
+        PGM *sobelx = sobel_filter(pgm, "False", "sobelx");
         pgm_write(sobelx, "test_sobel_x.pgm");
     }
     else if(strcmp(kernel_type, "sobely") == 0){
-        PGM *sobely = sobel_filter(pgm, "True", "sobely");
+        PGM *sobely = sobel_filter(pgm, "False", "sobely");
         pgm_write(sobely, "test_sobel_y.pgm");
     }
     else if(strcmp(kernel_type, "sobelxy") == 0){
         
     }
     else if(strcmp(kernel_type, "sobel") == 0){
-        PGM *sobelx = sobel_filter(pgm, "True", "sobelx");
-        PGM *sobely = sobel_filter(pgm, "True", "sobely");
-        PGM *sobelxy = sobel_filter(pgm, "True", "sobelxy");
-        pgm_write(sobelxy, "test_sobel_xy.pgm");
-        pgm_write(sobely, "test_sobel_y.pgm");
+        PGM *sobelx = sobel_filter(pgm, "False", "sobelx");
+        PGM *sobely = sobel_filter(pgm, "False", "sobely");
+        PGM *sobelxy = sobel_filter(pgm, "False", "sobelxy");
         pgm_write(sobelx, "test_sobel_x.pgm");
+        pgm_write(sobely, "test_sobel_y.pgm");
+        pgm_write(sobelxy, "test_sobel_xy.pgm");
         pgm_free(sobelx);
         pgm_free(sobely);
         pgm_free(sobelxy);
@@ -82,7 +83,7 @@ int main(int argc, char *argv[]){
             exit(EXIT_FAILURE);
     }
     
-    //pgm_show_matrix(pgm, pgm->width, pgm->height);
+    
 
     pgm_free(pgm);
 

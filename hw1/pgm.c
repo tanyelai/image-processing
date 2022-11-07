@@ -153,12 +153,12 @@ void pgm_show_matrix(PGM *pgm, int width, int height){
 
 
 /**
- * @brief Write a pgm image to a file
- *        Check for PGM type is P2, writing mode is w and if PGM type is P5, writing mode is wb
+ * @brief Write a pgm matrix to a file
+ *        Check whether PGM type is P2 or P5. If P2 writing mode is w, and if P5 writing mode is wb
  *        if PGM type is P2, data orientation is like this: data|whitespace|data|whitespace
  *        so fprintf writes data|whitespace and then data to the file
  *        if PGM type is P5, we can write the data with fwrite line by line
- *        Single pixel data type is unsigned char (max value is 255)
+ *        Data type is unsigned char (max value is 255)
  * 
  * @param pgm 
  * @param filename 
@@ -224,9 +224,9 @@ void pgm_free(PGM *pgm){
  * @brief Apply method of sobel filter function that provides horizontal and vertical
  *        filtering in the desired direction.
  *        main.c gets input param "choice" to determine which filter will be applied.
- *        Available choices "SOBEL_X": horizontal filter
- *                          "SOBEL_Y": vertical filter
- *                          "SOBEL_XY": both horizontal and vertical filter
+ *        Available choices "sobelx": horizontal filter
+ *                          "sobely": vertical filter
+ *                          "sobelxy": both horizontal and vertical filter
  * 
  * @param img 
  * @param padding 
@@ -374,11 +374,10 @@ void create_gaussian_filter(int kernel_size, float kernel[kernel_size][kernel_si
 	}
 
 	// CREATE GAUSSIAN KERNEL
-	for(i=0; i<kernel_size; i++){
-		for(j=0; j<kernel_size; j++){
+	for(i=0; i<kernel_size; i++)
+		for(j=0; j<kernel_size; j++)
 			kernel[i][j] = exp(-(X[i][j] * X[i][j] + Y[i][j] * Y[i][j]) / (2 * sigma * sigma));
-		}
-	}
+		
 
     float normalization_factor = kernel[0][0];
 
@@ -472,3 +471,4 @@ PGM *convolution(PGM *img, char *padding, int kernel_size, float kernel[][kernel
 
     return scaled_img;
 }
+

@@ -20,7 +20,8 @@ matrisinin boyutunu (3x3, 5x5 gibi tek sayılı bir kare matris olabilir) ve de�
 sonuç görüntüyü “pgm” formatında yeni bir dosyaya yerleştiren fonksiyonu yazınız.
 
 
------------
+<br/><br/>
+
 ### hw2 - (Doku Analizi): 
 **Konu**: İçerik Tabanlı Görüntü Erişimi (Content Based Image Retrieval)<br/>**Açıklama**: Bu ödevde resimlerin doku benzerliklerini değerlendirerek bir sorgu resmine en çok benzeyen 3 adet resmi tespit etmemiz istenmektedir. Sistemin başarısı ekte paylaşılan 10 doku sınıfına ait örnek resimler için değerlendirilecektir.<br/><br/>
 **İşlem Adımları**: Ödev 2 aşamadan oluşmaktadır. 
@@ -30,11 +31,13 @@ a. Test resminin Uniform-LBP histogramını eğitim örnekleri için yaptığın
 b. Resimlerin benzerliklerini ölçerken verilen test resminin eğitim resimlerinin hepsine mesafesini Manhattan Mesafesi yöntemi ile hesaplayarak en benzer olduğu 3’er resmi
 
 
------------
+<br/><br/>
+
 ### hw3 - (Görüntü Sınıflandırma):
 **Konu/Açıklama**: Bu ödevde konvolüsyonel sinir ağları ile CIFAR-10 veri kümesi kullanılarak eğitilmiş bir 
 öğrenme modelini kullanarak sınıflandırma yapan bir sistem tasarlamamız istenmektedir.
 
+<br/><br/>
 
 ### project - (Görüntü Segmentasyonu):
 **Konu**: Kodlayıcı-Kod çözücü (Encoder-Decoder) Mimarisi temelli Konvolüsyonel Sinir Ağı Kullanarak Görüntü Bölütleme

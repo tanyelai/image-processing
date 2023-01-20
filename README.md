@@ -39,8 +39,7 @@ b. Resimlerin benzerliklerini ölçerken verilen test resminin eğitim resimleri
 ### project - (Görüntü Segmentasyonu):
 **Konu**: Kodlayıcı-Kod çözücü (Encoder-Decoder) Mimarisi temelli Konvolüsyonel Sinir Ağı Kullanarak Görüntü Bölütleme
 
-**Açıklama**: Bu projede “The Oxford-IIIT Pet”[1] veriseti üzerinde kodlayıcı-kod çözücü mimarisi olan 
-“LinkNet: Exploiting Encoder Representations for Efficient Semantic Segmentation” [2] konvolüsyonel 
+**Açıklama**: Bu projede “The Oxford-IIIT Pet” veriseti üzerinde kodlayıcı-kod çözücü mimarisi olan 
+“LinkNet: Exploiting Encoder Representations for Efficient Semantic Segmentation” konvolüsyonel 
 sinir ağı gerçeklenecektir. Veri kümesi kapsamındaki bütün görüntüler üzerinde semantik bölütleme ile 
 üç ana sınıfa ayrılması beklenmektedir.
-

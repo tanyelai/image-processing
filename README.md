@@ -35,3 +35,12 @@ b. Resimlerin benzerliklerini ölçerken verilen test resminin eğitim resimleri
 **Konu/Açıklama**: Bu ödevde konvolüsyonel sinir ağları ile CIFAR-10 veri kümesi kullanılarak eğitilmiş bir 
 öğrenme modelini kullanarak sınıflandırma yapan bir sistem tasarlamamız istenmektedir.
 
+
+### project - (Görüntü Segmentasyonu):
+**Konu**: Kodlayıcı-Kod çözücü (Encoder-Decoder) Mimarisi temelli Konvolüsyonel Sinir Ağı Kullanarak Görüntü Bölütleme
+
+**Açıklama**: Bu projede “The Oxford-IIIT Pet”[1] veriseti üzerinde kodlayıcı-kod çözücü mimarisi olan 
+“LinkNet: Exploiting Encoder Representations for Efficient Semantic Segmentation” [2] konvolüsyonel 
+sinir ağı gerçeklenecektir. Veri kümesi kapsamındaki bütün görüntüler üzerinde semantik bölütleme ile 
+üç ana sınıfa ayrılması beklenmektedir.
+
